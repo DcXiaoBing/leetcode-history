@@ -1,0 +1,12 @@
+int[] spf; // spf[x] is the smallest prime factor of number x, where x >= 2
+
+for (int i = 1; i <= MAX; i++) spf[i] = i;
+
+for (int i = 2; i * i <= MAX; i++) {
+  if (spf[i] != i) continue; // skip if `i` is not a prime number
+  for (int j = i * i; j <= n; j += i) {
+    if (spf[j] == j) { // marking spf[j] if it is not previously marked
+      spf[j] = i;
+    }
+  }
+}

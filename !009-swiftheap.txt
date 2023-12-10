@@ -1,0 +1,108 @@
+class Solution {
+    func downTop(_ mem: inout [Int], _ p: Int) {
+        let par = (p - 1) / 2
+        if par < 0 {
+            return
+        }
+        if mem[par] < mem[p] {
+            let temp = mem[par]
+            mem[par] = mem[p]
+            mem[p] = temp
+            downTop(&mem, par)
+        }
+    }
+    
+    func topDown(_ mem: inout [Int], _ p: Int) {
+        if p >= mem.count {
+            return
+        }
+        
+        var maxp = p 
+        var q = p * 2 + 1
+        for i in 0...1 {
+            q += i
+            if q >= mem.count {
+                break
+            }
+            if mem[maxp] < mem[q] {
+                maxp = q
+            } 
+        }
+        
+        if maxp != p {
+            let temp = mem[p]
+            mem[p] = mem[maxp]
+            mem[maxp] = temp
+            topDown(&mem, maxp)
+        }
+    }
+    
+    func create(_ mem: inout [Int]) {
+        for i in 0..<mem.count {
+            downTop(&mem, i)
+        }
+    }
+    
+    func getMax(_ mem: inout [Int]) -> Int {
+        let res = mem[0]
+        mem[0] = mem.last!
+        mem.removeLast()
+        topDown(&mem, 0)
+        return res
+    }
+    
+    func insert(_ mem: inout [Int], _ num: Int) {
+        mem.append(num)
+        downTop(&mem, mem.count - 1)
+    }
+    
+    func furthestBuilding(_ heights: [Int], _ bricks: Int, _ ladders: Int) -> Int {
+        let n = heights.count
+        if n == 1 {
+            return 0
+        }
+        var mem = Array(repeating: 0, count: n + 1)
+        var sumTotal = 0
+        for i in 1..<n {
+            if heights[i] > heights[i-1] {
+                mem[i-1] = heights[i] - heights[i-1]
+                sumTotal += mem[i-1]
+            }
+        }
+        
+        if sumTotal <= bricks + ladders {
+            return n - 1
+        }
+        
+        var sum = 0
+        var mem1 = [Int]()
+        var unused = ladders
+        var hasCreate = false
+        for i in 0..<n {
+            sum += mem[i]
+            if mem[i] > 0 {
+                if hasCreate {
+                    insert(&mem1, mem[i])
+                } else {
+                    mem1.append(mem[i])
+                }
+            }
+            if sum <= bricks {
+                continue
+            }
+            
+            if unused <= 0 {
+                return i
+            }
+            
+            if !hasCreate {
+                create(&mem1)
+            }
+            
+            let t = getMax(&mem1)
+            sum -= t
+            unused -= 1
+        }
+        return n - 1
+    }
+}

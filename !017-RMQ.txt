@@ -1,0 +1,39 @@
+const int N = 1e5 + 9;
+const int M = 20;
+class Solution {
+private:
+    int rmq[20][N];
+    int n;
+    int idk[M];
+    int query(int l , int r){
+        int d = 0;
+        while (idk[d + 1] <= r - l + 1) d++;
+        return min(rmq[d][l] , rmq[d][r - idk[d] + 1]);
+    }
+public:
+    vector<int> mostCompetitive(vector<int>& nums, int k) {
+        n = nums.size();
+        int d = n - k;
+        idk[0] = 1;
+        for (int i = 1 ; i < M ; ++i) idk[i] = idk[i - 1] * 2;
+        for (int i = 0 ; i < n ; ++i) rmq[0][i] = nums[i];
+        for (int i = 1 ; i < M ; ++i){
+            for (int j = 0 ; j + idk[i] - 1 < n ; ++j){
+                rmq[i][j] = min(rmq[i - 1][j] , rmq[i - 1][j + idk[i - 1]]); // first half + last half
+            }
+        }
+        int p = 0;
+        vector<int> ans;
+        ans.clear();
+        for (int i = 0 ; i < k ; ++i){
+            int s = query(p , p + d);
+            while (nums[p] != s){
+                ++p;
+                --d;
+            }
+            ans.push_back(nums[p]);
+            p++;
+        }
+        return ans;
+    }
+};

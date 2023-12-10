@@ -1,0 +1,10 @@
+Digit DP
+
+DFS with two tight
+https://leetcode.com/problems/count-of-integers/discuss/3594894/Classic-Digit-DP-or-Similar-Problems
+
+DFS with string leading zero 2801:
+https://leetcode.com/problems/count-stepping-numbers-in-range/discuss/3836255/Python-Digit-DP-Clean-and-Concise
+
+I believe all digit DP can use both upper and lower limit DP.
+https://leetcode.com/submissions/detail/1008150767/

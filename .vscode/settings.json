@@ -1,0 +1,10 @@
+{
+  "editor.defaultFormatter": "redhat.java",
+  "editor.minimap.enabled": false,
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  }
+}

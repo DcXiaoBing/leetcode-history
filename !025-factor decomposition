@@ -1,0 +1,19 @@
+  private HashSet<Integer> decomposite(int num) {
+    HashSet<Integer> res = new HashSet<>();
+    while (num % 2 == 0) {
+      res.add(2);
+      num /= 2;
+    }
+    for (int i = 3; i * i <= num; i += 2) {
+      while (num % i == 0) {
+        res.add(i);
+        num /= i;
+      }
+    }
+    if (num > 2) {
+      res.add(num);
+    }
+
+    res.remove(1);
+    return res;
+  }

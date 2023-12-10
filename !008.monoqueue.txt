@@ -1,0 +1,6 @@
+increasing queue can give you min, at head. (add at tail)
+Numbers in interval is larger than right side. (if smaller, will appear in queue to form a increasing sequence)
+
+decreasing queue can give you max, at head. (add at tail)
+Numbers in interval is smaller than right side (if larger, will appear in queue to form a decreasing sequence)
+

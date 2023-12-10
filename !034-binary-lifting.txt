@@ -1,0 +1,162 @@
+Binary Lifting 倍增
+
+leetcode
+https://leetcode.com/problems/maximize-value-of-function-in-a-ball-passing-game/discuss/3965082/Binary-Jumping
+
+OIWiki https://oi-wiki.org/basic/binary-lifting/
+
+https://aryansh.gitbook.io/informatics-notes/binary-lifting/binary-lifting-gold-part-1
+
+
+
+```
+// Binary lifting - 倍增法
+  // for X, receive^2(X) === receive(p[X]). This is the base of binary lifting
+
+  // https://leetcode.com/problems/maximize-value-of-function-in-a-ball-passing-game/discuss/3965082/Binary-Jumping
+
+  private static final int MAX_POW = 35; // 2^35 - 1 > 10e10
+  public long getMaxFunctionValue(List<Integer> _arr, long k) {
+    int n = _arr.size(), arr[] = toArray(_arr);
+
+    // p[start][pow] 2^pow-th parent node of start
+    // pSum[start][pow] path sum of receive[start] receive^2[start] ... receive^(2^pow)[start]
+    int p[][] = new int[n][MAX_POW];
+    long pSum[][] = new long[n][MAX_POW];
+
+    for (int start = 0; start < n; start++) pSum[start][0] = p[start][0] = arr[start];
+
+    for (int pow = 1; pow < MAX_POW; pow++) {
+      for (int start = 0; start < n; start++) {
+        p[start][pow] = p[p[start][pow - 1]][pow - 1]; // 2^(pow-1)-th parent of p[start][pow - 1]
+        pSum[start][pow] = pSum[start][pow - 1] + pSum[p[start][pow - 1]][pow - 1];
+      }
+    }
+    // for (int[] row : p) System.out.println(Arrays.toString(row));
+    // for (long[] row : pSum) System.out.println(Arrays.toString(row));
+
+    // collect result
+    long res = 0;
+    for (int start = 0; start < n; start++) {
+      long cur = start;
+      int node = start;
+      for (int i = 0; i < MAX_POW; i++) if ((k & (1L << i)) != 0) {
+        cur += pSum[node][i];
+        node = p[node][i];
+
+        // if (start == 2) System.out.println(cur + " " + node);
+      }
+
+      res = Math.max(res, cur);
+    }
+    return res;
+  }
+
+  private int[] toArray(List<Integer> arr) {
+    int res[] = new int[arr.size()], p = 0;
+    for (int num : arr) res[p++] = num;
+    return res;
+  }
+```
+
+
+2846. Minimum Edge Weight Equilibrium Queries in a Tree
+https://leetcode.com/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/discuss/3996073/C%2B%2B-or-Java-or-PythonPrefix-sum-and-LCA-on-tree-explain-in-detail
+
+class Solution {
+  // undirected tree, how to know which direction to go?
+  // topologic sort? Peel layer by layer?
+  // find center node, maybe one, maybe two
+  // we can make it 1 node, right?
+  // WE CAN MAKE IT DIRECTED
+
+  // Possible for a prefix sum?
+  // Pick node 0, bfs from it. Then we have 0...all rest
+  // But not all path go through node 0
+  // Find lowest common ancestor
+
+  // Pick a node, do bfs, build parent-child mapping
+  // Then find LCA
+  //
+
+  // record frequency map for each start,end pair
+  // weight at most 26 ==> what can we do
+
+  // frequency len 26
+
+  // 有向图，PREFIX SUM，LCA都想到了
+  // 但是写不出来
+  private static final int MAX = 15; // 2^14 > 1e4
+  public int[] minOperationsQueries(int n, int[][] edges, int[][] queries) {
+    List<List<int[]>> graph = new ArrayList<>();
+    for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+    for (int[] edge : edges) {
+      graph.get(edge[0]).add(new int[]{edge[1], edge[2]});
+      graph.get(edge[1]).add(new int[]{edge[0], edge[2]});
+    }
+
+    int parents[][] = new int[MAX][n]; // parents[i][j] => 2^i-th parent of node j
+    int weights[][] = new int[n][27];
+    int depths[] = new int[n];
+    dfs(graph, 0, 0, 0, parents, weights, depths);
+
+    // binary lifting, compute parent array
+    for (int i = 1; i < MAX; i++) for (int j = 0; j < n; j++) parents[i][j] = parents[i - 1][parents[i - 1][j]];
+
+    // do queries
+    int[] res = new int[queries.length];
+    for (int i = 0; i < queries.length; i++) {
+      int[] q = queries[i];
+      int node1 = q[0], node2 = q[1], l = lca(node1, node2, parents, depths);
+
+      int maxCnt = 0, total = depths[node1] + depths[node2] - 2 * depths[l];
+      for (int w = 0; w <= 26; w++) {
+        int cnt = weights[node1][w] + weights[node2][w] - 2 * weights[l][w];
+        maxCnt = Math.max(maxCnt, cnt);
+      }
+
+      res[i] = total - maxCnt;
+    }
+    return res;
+  }
+
+  // dfs
+  // Build parent-child relation
+  // Compute depth for each node (with tree root at 0)
+  private void dfs(List<List<int[]>> graph, int cur, int pre, int depth, int[][] parents, int[][] weights, int[] depths) {
+    parents[0][cur] = pre;
+    depths[cur] = depth;
+
+    for (int[] tmp : graph.get(cur)) {
+      int nxt = tmp[0], nWeight = tmp[1];
+      if (nxt == pre) continue; // do not repeat visit parent node.
+
+      weights[nxt] = weights[cur].clone();
+      weights[nxt][nWeight]++;
+      dfs(graph, nxt, cur, depth + 1, parents, weights, depths);
+    }
+  }
+
+  // https://oi-wiki.org/graph/lca/
+  private int lca(int node1, int node2, int[][] parents, int[] depths) {
+    if (depths[node1] > depths[node2]) return lca(node2, node1, parents, depths);
+
+    // adjust height of node2 to have same depth with ndoe1
+    int diff = depths[node2] - depths[node1];
+    for (int p = 0; (1 << p) <= diff; p++) {
+      if ((diff & (1 << p)) != 0) node2 = parents[p][node2];
+    }
+
+    if (node1 == node2) return node1;
+
+    // find the first node that has different parent
+    for (int p = MAX - 1; p >= 0; p--) {
+      if (parents[p][node1] != parents[p][node2]) {
+        node1 = parents[p][node1];
+        node2 = parents[p][node2];
+      }
+    }
+
+    return parents[0][node1];
+  }
+}

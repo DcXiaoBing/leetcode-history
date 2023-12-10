@@ -1,0 +1,49 @@
+There are two basic patten
+
+====================================================
+// fast needs to go to null, so it goes list length steps
+// No matter of the odd/even of length, slow will go one step more.
+
+List of even length
+1 2 3 4 null
+  ^ ^          first loop
+    ^   ^      second loop
+
+List of odd length
+1 2 3 4 5 null
+  ^ ^          first loop
+    ^   ^      second loop
+    ^       ^  thrid loop
+
+boolean isOdd = false;
+ListNode pre = null, fast = head, slow = head;
+while(fast != null) {
+  fast = fast.next;
+  if(fast != null) fast = fast.next;
+  else {
+    isOdd = true;
+    break;
+  }
+  pre = slow;
+  slow = slow.next;
+}
+
+
+====================================================
+// If we put fast.next != null && fast.next.next != null, then slow will not go one more step.
+// slow will precisely point to left part end point.
+
+List of even length
+1 2 3 4 null
+  ^ ^          first loop and stop
+
+List of odd length
+1 2 3 4 5 null
+  ^ ^          first loop
+    ^   ^      second loop and will stop
+
+ListNode fast = head, slow = head;
+while(fast != null && fast.next != null) {
+  slow = slow.next;
+  fast = fast.next.next;
+}

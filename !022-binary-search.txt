@@ -1,0 +1,34 @@
+根据计算mid的方式来选择不同的条件
+mid = l + (r - l) / 2 计算得出的mid是是属于左边的
+e.g.
+r - l + 1 == 5 l = 0, r = 4, mid = 2
+r - l + 1 == 6 l = 0, r = 5, mid = 2
+
+属于左边的话，我们需要将binary search的结果写为如下方式才可以避免无限循环。
+这种写法要求我们把左边看作“不想要”的结果！！！
+match的意思就是左边符合了 “不想要”的条件
+if(match) l = mid + 1;
+else r = mid;
+
+e.g. 错误写法
+if(match) l = mid;
+r = mid - 1;
+
+l = 3, r = 4, mid = 3;
+if result match -> l = 3, r = 4, boundary isn't changing, loops forever
+if result !match -> l = 3, r = 2
+
+但是，如果使用我们推荐的写法
+l = 3, r = 4, mid = 3;
+if result match -> l = 4, r = 4, boundary Changed!!!
+if result !match -> l = 3, r = 3
+
+
+
+同理
+如果mid = l + (r - l + 1) / 2, 计算得出的mid是是属于右边的
+则要把右边看作不想要的
+
+// match means that mid is not what we want
+if(match) r = mid - 1;
+else l = mid;

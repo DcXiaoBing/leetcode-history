@@ -1,0 +1,17 @@
+for (int i = s; i; i = (i - 1) &ｓ)
+
+iterate 2^i status and for a status, check all complement status's subset, time complexity is O(3^n)
+complement means for status i, check (((1 << n) - 1) Xor i)'s bit subset
+
+Eg.
+110
+100
+010
+
+1101
+1100
+1001
+1000
+0101
+0100
+0001

@@ -1,0 +1,35 @@
+int primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+
+
+static boolean isPrime(int n) {
+
+  // Check if number is less than
+  // equal to 1
+  if (n <= 1)
+    return false;
+  else if (n <= 3)
+    return true;
+
+  // Check if n is a multiple of 2 or 3
+  else if (n % 2 == 0 || n % 3 == 0)
+    return false;
+
+  // If not, then just check the odds
+  for (int i = 5; i <= Math.sqrt(n); i += 6) {
+    if (n % i == 0 || n % (i + 2) == 0)
+        return false;
+  }
+  return true;
+}
+
+
+function isprime(n) {
+    if n ≤ 1 return FALSE
+    else if n ≤ 3 return TRUE
+    else if (n mod 2 = 0) or (n mod 3 = 0) return FALSE
+    i = 5
+    while (i*i ≤ n) {
+      if (n mod i = 0) or (n mod (i + 2) = 0) return FALSE
+      i = i + 6
+    }
+    return TRUE

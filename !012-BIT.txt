@@ -1,0 +1,108 @@
+1. 求前缀和
+2. 如果把数字当index，可以求比某个数小的frequence
+
+class BIT {
+  // index 0 represents nothing!
+  // So all element should be 1-indexed
+  int[] arr;
+
+  public BIT(int len) {
+    arr = new int[len];
+  }
+
+  // need to pop up
+  public void update(int idx, int val) {
+    while(idx < arr.length) {
+      arr[idx] = compute(arr[idx], val);
+      idx += idx & -idx; // add a lowest bit
+    }
+    // System.out.println(Arrays.toString(arr) + " " + idx + " " + val);
+  }
+
+  public int query(int idx) {
+    int res = 0; // like Segment tree, need combine results
+    while(idx > 0) {
+      res = compute(res, arr[idx]);
+      idx -= idx & -idx; // remove a lowest bit
+    }
+    return res;
+  }
+
+  // function that combine results
+  // l is the index to store results
+  private int compute(int old, int val) {
+    // return Math.max(old, val); max num
+    // return old + val; // prefixsum
+  }
+}
+
+int read(int idx) {
+  int sum = 0;
+  while (idx > 0) {
+    sum += tree[idx];
+    idx -= (idx & -idx);
+  }
+  return sum;
+}
+
+void update(int idx, int val) {
+  while (idx <= MaxIdx) {
+    tree[idx] += val;
+    idx += (idx & -idx);
+  }
+}
+
+int readSingle(int idx) {
+  int sum = tree[idx]; // this sum will be decreased
+  if (idx > 0) { // the special case
+    int z = idx - (idx & -idx);
+    idx--; // idx is not important anymore, so instead y, you can use idx
+    while (idx != z) { // at some iteration idx (y) will become z
+      sum -= tree[idx];
+      // substruct tree frequency which is between y and "the same path"
+      idx -= (idx & -idx);
+    }
+  }
+  return sum;
+}
+
+// 求前缀max
+const int N = 1e5 + 9;
+class Solution {
+private:
+    unordered_map<int, int> pos;
+    int tree[N];
+    int low_bit(int x) { return x & - x ; }
+    int n;
+    void update(int x , int y){
+        for ( ; x <= n ; x += low_bit(x)){
+            tree[x] = max(tree[x] , y);
+        }
+    }
+    int query(int x){
+        int r = 0;
+        for ( ; x ; x -= low_bit(x)){
+            r = max(r , tree[x]);
+        }
+        return r;
+    }
+public:
+    int minOperations(vector<int>& target, vector<int>& arr) {
+        memset(tree , 0 , sizeof(tree));
+        pos.clear();
+        for (int i = 0 ; i < (int)target.size() ; ++i){
+            pos[target[i]] = i + 1;
+        }
+        n = target.size();
+        int ans = target.size();
+        for (int i = 0 ; i < (int)arr.size() ; ++i){
+            if (pos.count(arr[i])){
+                int x = pos[arr[i]];
+                int y = query(x - 1);
+                ans = min(ans , n - y - 1);
+                update(x , y + 1);
+            }
+        }
+        return ans;
+    }
+};

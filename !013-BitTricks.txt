@@ -1,0 +1,21 @@
+https://renshuo555.github.io/2018/03/14/bit-manipulation-summary/
+
+// get i-th bit
+(n >> i) & 1
+
+// set i-th bit to 1
+n | (1 << i)
+
+// set i-th bit to 0
+A &= ~(1 « bit)
+
+// remove last 1
+n & (n - 1)
+
+// get last bit
+A & -A
+A & ~(A - 1)
+x ^ (x & (x - 1))
+
+
+~A = -A - 1

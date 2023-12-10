@@ -1,0 +1,107 @@
+ufset{
+          const int N=1000;
+          int fa[N],rank[N];
+
+          void init() { for (int i=0;i<N;++i) fa[i]=i,rank[i]=0; }
+          int find(int x){
+              int r=x,y;
+              while (fa[r]!=r) r=fa[r];
+              while (fa[x]!=r) { y=fa[x],fa[x]=r,x=y;}
+              return r;
+          }
+          void unionset(int x,int y){       // x,y roots
+               if (rank[x]>rank[y]) fa[y]=x;
+               else { fa[x]=y; if (rank[x]==rank[y]) ++rank[y]; }
+          }
+
+class DSU {
+  int[] parent, size;
+
+  DSU(int n) {
+    parent = new int[n];
+    size = new int[n];
+
+    for(int i = 0; i < n; i++) {
+      parent[i] = i;
+      size[i] = 1;
+    }
+  }
+
+  public int find(int x) {
+    if(parent[x] != x) parent[x] = find(parent[x]);
+    return parent[x];
+  }
+
+  public boolean union(int x, int y) {
+    int px = find(x), py = find(y);
+
+    if(px == py) return false; // already one part
+
+    if(size[px] > size[py]) {
+      size[px] += size[py];
+      parent[py] = px;
+    } else {
+      size[py] += size[px];
+      parent[px] = py;
+    }
+    return true;
+  }
+
+  public boolean check(int x, int y) {
+    return find(x) == find(y);
+  }
+}
+
+private int find(int[] root, int i){
+  while(root[i]!=i){
+    int p=root[i];
+    root[i]=root[p];
+    i=p;
+  }
+  return i;
+}
+
+class UF {
+    int[] parent;
+    int[] rank;
+    int n;
+    public UF(int n) {
+        this.parent = new int[n];
+        this.rank = new int[n];
+        this.n = n;
+        for (int i = 0; i < parent.length; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+    public boolean union(int p, int q) {
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if (pRoot == qRoot)
+            return false;
+        if (rank[p] < rank[q]) {
+            parent[pRoot] = parent[q];
+        } else if (rank[q] < rank[p]) {
+            parent[qRoot] = pRoot;
+        } else {
+            parent[pRoot] = qRoot;
+            rank[q]++;
+        }
+        return true;
+    }
+
+    public int find(int p) {
+        if (p != parent[p])
+            parent[p] = find(parent[p]);
+        return parent[p];
+    }
+
+    boolean isFullConnected() {
+        int root = find(0);
+        for (int i = 1; i < n; i++) {
+            if (find(i) != root)
+                return false;
+        }
+        return true;
+    }
+}
