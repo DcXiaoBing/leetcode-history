@@ -1,18 +1,18 @@
 ufset{
-          const int N=1000;
-          int fa[N],rank[N];
+  const int N=1000;
+  int fa[N],rank[N];
 
-          void init() { for (int i=0;i<N;++i) fa[i]=i,rank[i]=0; }
-          int find(int x){
-              int r=x,y;
-              while (fa[r]!=r) r=fa[r];
-              while (fa[x]!=r) { y=fa[x],fa[x]=r,x=y;}
-              return r;
-          }
-          void unionset(int x,int y){       // x,y roots
-               if (rank[x]>rank[y]) fa[y]=x;
-               else { fa[x]=y; if (rank[x]==rank[y]) ++rank[y]; }
-          }
+  void init() { for (int i=0;i<N;++i) fa[i]=i,rank[i]=0; }
+  int find(int x){
+      int r=x,y;
+      while (fa[r]!=r) r=fa[r];
+      while (fa[x]!=r) { y=fa[x],fa[x]=r,x=y;}
+      return r;
+  }
+  void unionset(int x,int y){       // x,y roots
+        if (rank[x]>rank[y]) fa[y]=x;
+        else { fa[x]=y; if (rank[x]==rank[y]) ++rank[y]; }
+  }
 
 class DSU {
   int[] parent, size;

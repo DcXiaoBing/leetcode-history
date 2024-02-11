@@ -19,7 +19,7 @@ class Solution {
       if (i <= r) {
         // Covered by range, so s[i,r] == s[i - l, r - l] (by definition)
         // untilze z[i-l] to convert this match to the head.
-        // We know z[i-l] covers s[i - l,i - l + z[i - l]]. And this is the longest we could have.
+        // We know z[i-l] covers s[i - l,i - l + z[i - l]]. And this is the longest we could have for subarray starting at i-l.
         // So for s[i,r], we know the best would be z[i - l]. (if r is big enough)
         // But we also need to care about whether i~r length is less than z[i-l]
         z[i] = Math.min(z[i - l], r - i + 1);
