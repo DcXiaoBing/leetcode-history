@@ -1,0 +1,45 @@
+https://leetcode.com/problems/sum-of-distances-in-tree/description/
+
+class Solution {
+  // re-route with dfs
+  // core:
+  // - get sum when root at 0
+  // - try all possible root by dfs
+  int[][] dp;
+  public int[] sumOfDistancesInTree(int n, int[][] edges) {
+    dp = new int[n][2];
+    List<List<Integer>> tree = new ArrayList<>();
+    for (int i = 0; i < n; i++) tree.add(new ArrayList<>());
+    for (int[] edge : edges) {
+      tree.get(edge[0]).add(edge[1]);
+      tree.get(edge[1]).add(edge[0]);
+    }
+
+    int[] res = new int[n];
+    res[0] = dfs(tree, 0, -1)[1];
+    dfs(tree, res, 0, -1);
+    return res;
+  }
+
+  // 0 - cnt, 1 - sum
+  private int[] dfs(List<List<Integer>> tree, int cur, int pre) {
+    int res = 0, cnt = 0;
+    // System.out.println(cur + " " + pre);
+    for (int nbh : tree.get(cur)) if (nbh != pre) {
+      int[] tmp = dfs(tree, nbh, cur);
+      res += tmp[1] + tmp[0];
+      cnt += tmp[0];
+    }
+
+    dp[cur] = new int[]{cnt + 1, res};
+    return dp[cur];
+  }
+
+  private void dfs(List<List<Integer>> tree, int[] res, int cur, int pre) {
+    for (int nbh : tree.get(cur)) if (nbh != pre) {
+      res[nbh] = res[cur] - dp[nbh][0] + tree.size() - dp[nbh][0];
+      dfs(tree, res, nbh, cur);
+    }
+
+  }
+}

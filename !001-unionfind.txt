@@ -28,7 +28,15 @@ class DSU {
   }
 
   public int find(int x) {
-    if(parent[x] != x) parent[x] = find(parent[x]);
+    int root = x;
+    while (parent[root] != root) parent = parent[root];
+
+    while (x != root) {
+      int tmp = parent[x];
+      parent[x] = root;
+      x = tmp;
+    }
+
     return parent[x];
   }
 

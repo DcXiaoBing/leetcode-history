@@ -4,6 +4,41 @@
 class BIT {
   // index 0 represents nothing!
   // So all element should be 1-indexed
+  long[] arr;
+
+  public BIT(int len) {
+    arr = new long[len];
+  }
+
+  // need to pop up
+  public void update(int idx, int val) {
+    while(idx < arr.length) {
+      arr[idx] = compute(arr[idx], val);
+      idx += idx & -idx; // add a lowest bit
+    }
+    // System.out.println(Arrays.toString(arr) + " " + idx + " " + val);
+  }
+
+  public long query(int idx) {
+    int res = 0; // like Segment tree, need combine results
+    while(idx > 0) {
+      res = compute(res, arr[idx]);
+      idx -= idx & -idx; // remove a lowest bit
+    }
+    return res;
+  }
+
+  // function that combine results
+  // l is the index to store results
+  private long compute(long old, long val) {
+    // return Math.max(old, val); max num
+    return old + val; // prefixsum
+  }
+}
+
+class BIT {
+  // index 0 represents nothing!
+  // So all element should be 1-indexed
   int[] arr;
 
   public BIT(int len) {
