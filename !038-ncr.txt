@@ -1,0 +1,35 @@
+// Combination
+
+// from gemeni
+public static long nCr(int n, int r) {
+  if (r > n) {
+      return 0;
+  }
+  if (r == 0 || r == n) {
+      return 1;
+  }
+
+  long result = 1;
+  for (int i = 1; i <= r; i++) {
+    result *= 0L + n - r + i;
+    result %= MODULO;
+
+    result *= BigInteger.valueOf(i).modInverse(BigInteger.valueOf(MODULO)).longValue();
+    result %= MODULO;
+  }
+  return result;
+}
+
+// Pascal's Triangle
+private static final long[][] NCR = new long[MAX + 1][101];
+static {
+  NCR[0][0] = 1;
+  for (int i = 1; i <= MAX; i++) {
+    NCR[i][0] = 1;
+    // if (i <= 100) NCR[i][i] = 1;
+    for (int j = 1; j <= Math.min(100, i); j++) {
+      NCR[i][j] = NCR[i - 1][j - 1] + NCR[i - 1][j];
+      NCR[i][j] %= MODULO;
+    }
+  }
+}
