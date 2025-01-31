@@ -77,3 +77,59 @@ class Solution {
 
 }
 // @lc code=end
+
+class Solution {
+  Random ran = new Random();
+
+  // k is 1-based largest, k-1 element lager, n-k element is smaller
+  // so 1-based smallest is n - k + 1
+  // idx be n-k
+  public int findKthLargest(int[] nums, int k) {
+    int n = nums.length;
+
+    // return qs(nums, 0, n - 1, n - k);
+    int tmp = qs(nums, 0, n - 1, n - k + 1);
+    // System.out.println(tmp + " " + Arrays.toString(nums));
+    return nums[n - k];
+  }
+
+  private int qs(int[] nums, int l, int r, int k) {
+    if (l == r)
+      return nums[l];
+
+    int pivot = l + ran.nextInt(r - l + 1);
+    int idx = partition(nums, l, r, pivot);
+    // System.out.println(l + " " + r + " " + pivot + " " + idx + " " +
+    // Arrays.toString(nums));
+    if (idx == k - 1)
+      return nums[idx];
+    else if (idx > k - 1)
+      return qs(nums, l, idx - 1, k);
+    else
+      return qs(nums, idx + 1, r, k);
+  }
+
+  private int partition(int[] nums, int l, int r, int pivot) {
+    int pval = nums[pivot], idx = l;
+
+    swap(nums, r, pivot);
+
+    for (int i = l; i < r; i++) {
+      if (nums[i] < pval) {
+        swap(nums, idx, i);
+        idx++;
+      }
+    }
+
+    swap(nums, r, idx);
+
+    // System.out.println(pval + " " + p);
+    return idx;
+  }
+
+  private void swap(int[] nums, int l, int r) {
+    int tmp = nums[l];
+    nums[l] = nums[r];
+    nums[r] = tmp;
+  }
+}
